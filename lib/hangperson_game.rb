@@ -7,11 +7,62 @@ class HangpersonGame
 
   # def initialize()
   # end
-  
+
   def initialize(word)
     @word = word
+    @guesses = ""
+    @wrong_guesses = ""
   end
 
+  attr_accessor :word
+  attr_accessor :guesses
+  attr_accessor :wrong_guesses
+
+  def word_with_guesses()
+    ret = ''
+    @word.split('').each { |c|
+      if @guesses.include?(c)
+        ret+= c
+      else
+        ret+= '-'
+      end
+    }
+    ret
+  end
+
+  def check_win_or_lose()
+    win = true
+    @word.split('').each { |c|
+      if !@guesses.include?(c)
+        win = false
+      end
+    }
+    if win
+      return :win
+    elsif @wrong_guesses.length >= 7
+      return :lose
+    end
+    :play
+  end
+
+
+  def guess(c)
+    if c == '' || c.nil? || (c=~/[a-zA-Z]+/).nil?
+      raise ArgumentError.new()
+      return
+    end
+    c = c.downcase
+    if @guesses.include?(c) || @wrong_guesses.include?(c)
+      return false
+    elsif @word.downcase.include?(c)
+      @guesses+=c
+      return true
+
+    else
+      @wrong_guesses+=c
+      true
+    end
+  end
   # You can test it by running $ bundle exec irb -I. -r app.rb
   # And then in the irb: irb(main):001:0> HangpersonGame.get_random_word
   #  => "cooking"   <-- some random word
